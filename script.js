@@ -17,19 +17,21 @@ function Gameboard() {
 
     const playSquare = (row, column, player) => {
         // check if square is empty
-        if (!board[row][column] === 0) return; 
-
+        if (!board[row][column].getValue() == 0) {
+            console.log('Square occupied!');
+            return false; 
+        }
         board[row][column].addToken(player);
+        return true;
     };
 
     const checkWinner = (row, col, token) => {
         // const allEqual = (arr) => {arr.every(val => val === arr[0])};
 
         // Check row
-        console.log('Checking rows...')
         for (let i = 0; i < columns; i++) {
-            if (board[row][i] != token) 
-                return false;
+            if (board[row][i].getValue() !== token) 
+                break;
             if (i == columns-1) {
                 console.log('Win row!');
                 return true;
@@ -37,9 +39,8 @@ function Gameboard() {
         }
 
         // Check each column
-        console.log('Checking columns...')
         for (let i = 0; i < rows; i++) {
-            if (board[i][col] != token)
+            if (board[i][col].getValue() !== token)
                 break;
             if (i == rows-1) {
                 console.log('Win column!');
@@ -48,20 +49,35 @@ function Gameboard() {
         }
 
         // Check diagonal
-        console.log('Checking diagonal...')
         if (row == col) {
             for (let i = 0; i < rows; i++) {
-                if (board[i][i] != token) break;
-                if (i == rows-1) return true;
+                if (board[i][i].getValue() !== token) 
+                    break;
+                if (i == rows-1) {
+                    return true;
+                }
             }
         }
-        if ((row + col) == row - 1) {
+        if ((row + col) == rows - 1) {
             for (let i = 0; i < rows; i++) {
-                if (board[i][(rows-1)-i] != token) break;
-                if (i == rows-1) return true;
+                if (board[i][(rows-1)-i].getValue() !== token) 
+                    break;
+                if (i == rows-1) {
+                    return true;
+                }
             }
         }
         return false;
+    }
+
+    const isTie = () => {
+        // Check if all squares are non-zero
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < columns; j++) {
+                if (board[i][j].getValue() == 0) return false;
+            }
+        }
+        return true;
     }
 
     // This method will be used to print board to the console.
@@ -73,7 +89,7 @@ function Gameboard() {
 
     // Provide an interface for the rest of our application to 
     // interact with the board
-    return { getBoard, playSquare, checkWinner, printBoard };
+    return { getBoard, playSquare, checkWinner, isTie, printBoard };
 }
 
 // A Cell represents one square on the board. 
@@ -103,11 +119,11 @@ function GameController(
     const players = [
         {
             name: playerOneName,
-            token: 1
+            token: 'X'
         },
         {
             name: playerTwoName,
-            token: 2
+            token: 'O'
         }
     ];
 
@@ -125,12 +141,24 @@ function GameController(
 
     const playRound = (row, column) => {
         // Add token from the current player
-        console.log(`Adding ${getActivePlayer().name}'s token into [${row}][${column}]`);
-        board.playSquare(row, column, getActivePlayer().token);
+        if (!board.playSquare(row, column, getActivePlayer().token)) {
+            console.log('Please choose an empty square');
+            printNewRound();
+            return;
+        }
 
-        // Check for winner and handle logic
+        console.log(`Adding ${getActivePlayer().name}'s token into [${row}][${column}]`);
+
+        // Check for winner 
         if(board.checkWinner(row, column, getActivePlayer().token)) {
-            console.log(`${getActivePlayer().name} has won!`);
+           printWinner();
+           return;
+        }
+
+        // Check for tie game 
+        if (board.isTie()) {
+            console.log("It's a tie!");
+            board.printBoard();
             return;
         }
 
@@ -139,14 +167,81 @@ function GameController(
         printNewRound();
     };
 
+    const printWinner = () => {
+        console.log(`${getActivePlayer().name} has won!`);
+        board.printBoard();
+    }
+
     // Initial play game message
     printNewRound();
 
     return {
         playRound,
-        getActivePlayer
+        getActivePlayer,
+        getBoard: board.getBoard
     };
 }
 
-const game = GameController();
+function ScreenController() {
+    const game = GameController();
+    const playerTurnDiv = document.querySelector('.turn');
+    const boardDiv = document.querySelector('.board');
+
+    const updateScreen = () => {
+        // clear the board
+        boardDiv.textContent = '';
+
+        // get newest version of the board and player's turn
+        const board = game.getBoard();
+        const activePlayer = game.getActivePlayer();
+
+        // Display player's turn
+        playerTurnDiv.textContent = `${activePlayer.name}'s turn...`
+
+        // Render board squares
+        board.forEach((row, rowIndex) => {
+            row.forEach((cell, index) => {
+                const cellButton = document.createElement("button");
+                cellButton.classList.add('cell');
+                // data attribute to identify cell
+                cellButton.dataset.row = rowIndex;
+                cellButton.dataset.column = index;
+                cellButton.textContent = cell.getValue();
+                boardDiv.appendChild(cellButton);
+            })
+        })
+    }
+
+    const bindEvents = () => {
+        boardDiv.addEventListener("click", clickHandlerBoard);
+        // boardDiv.addEventListener('click', clickTakenSquare);
+    }
+
+    function clickHandlerBoard(e) {
+        const selectedRow = e.target.dataset.row;
+        const selectedColumn = e.target.dataset.column;
+
+        if(!selectedRow || ! selectedColumn) return;
+
+        game.playRound(selectedRow, selectedColumn);
+        updateScreen();
+    }
+
+    // function clickTakenSquare(e) {
+    //     const board = game.getBoard();
+    //     const selectedRow = e.target.dataset.row;
+    //     const selectedColumn = e.target.dataset.column;
+    //     if (board[selectedRow][selectedColumn].getValue() !== 0) {
+    //         alert('Please choose an empty square');
+    //     }
+    // }
+
+    // Initial render 
+    updateScreen();
+    bindEvents();
+}
+
+ScreenController();
+
+// const game = GameController('Golf', 'Gift');
 
