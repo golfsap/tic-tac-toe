@@ -60,7 +60,7 @@ function Gameboard() {
         }
         if ((row + col) == rows - 1) {
             for (let i = 0; i < rows; i++) {
-                if (board[i][(rows-1)-i].getValue() !== token) 
+                if (board[i][(rows-1)-i].getValue() != token) 
                     break;
                 if (i == rows-1) {
                     return true;
@@ -68,7 +68,7 @@ function Gameboard() {
             }
         }
         return false;
-    }
+    };
 
     const isTie = () => {
         // Check if all squares are non-zero
@@ -78,7 +78,7 @@ function Gameboard() {
             }
         }
         return true;
-    }
+    };
 
     // This method will be used to print board to the console.
     // Won't need it after we build the UI
@@ -142,7 +142,7 @@ function GameController(
     const playRound = (row, column) => {
         // Add token from the current player
         if (!board.playSquare(row, column, getActivePlayer().token)) {
-            console.log('Please choose an empty square');
+            alert('Please choose an empty square');
             printNewRound();
             return;
         }
@@ -150,7 +150,7 @@ function GameController(
         console.log(`Adding ${getActivePlayer().name}'s token into [${row}][${column}]`);
 
         // Check for winner 
-        if(board.checkWinner(row, column, getActivePlayer().token)) {
+        if (board.checkWinner(row, column, getActivePlayer().token)) {
            printWinner();
            return;
         }
@@ -210,7 +210,7 @@ function ScreenController() {
                 boardDiv.appendChild(cellButton);
             })
         })
-    }
+    };
 
     const bindEvents = () => {
         boardDiv.addEventListener("click", clickHandlerBoard);
