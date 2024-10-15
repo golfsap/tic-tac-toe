@@ -1,5 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    background-color: #c9d6ff;
+    background: linear-gradient(to right, #e2e2e2, #c9d6ff);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* height: 100vh; */
+}
+
 h1 {
-    text-align: center;
+    /* text-align: center; */
+    padding: 20px 0;
+}
+
+h2 {
+    /* font-size: 16px; */
 }
 
 .container {
@@ -7,9 +31,15 @@ h1 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding-top: 40px;
+}
+
+.turn {
+    padding-bottom: 20px;
 }
 
 .board {
+    /* padding-top: 20px; */
     display: grid;
     grid-template-columns: repeat(3, 100px);
     grid-template-rows: repeat(3, 100px);
@@ -19,3 +49,80 @@ h1 {
 .cell {
     border: 1px solid black;
 }
+
+.modalBackdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.start-game-modal {
+    background-color: #fff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    width: 400px;
+    height: 250px;
+    overflow: hidden;
+    border-radius: 20px;
+}
+
+.center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.hidden {
+    display: none;
+}
+
+.start-game-modal form {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    align-items: center;
+    justify-content: center;
+    padding: 0 30px;
+    height: 100%;
+}
+
+.start-game-modal input {
+    background-color: #eee;
+    border: none;
+    margin: 8px 6px;
+    padding: 10px 15px;
+    font-size: 13px;
+    border-radius: 8px;
+    width: 220px;
+    outline: none;
+}
+
+.start-game-modal button {
+    background-color: #38B000;
+    color: #fff;
+    font-size: 12px;
+    padding: 10px 45px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.player-name {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.start-game-modal span {
+    font-size: 12px;
+    margin-top: 16px;
+}
+
+

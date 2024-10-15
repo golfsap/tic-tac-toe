@@ -113,6 +113,11 @@ function GameController(
 
     let activePlayer = players[0];
 
+    const setPlayerName = (playerOneName, playerTwoName) => {
+        players[0].name = playerOneName;
+        players[1].name = playerTwoName;
+    }
+
     const switchPlayerTurn = () => {
         activePlayer = activePlayer === players[0] ? players[1] : players[0];
     };
@@ -164,6 +169,7 @@ function GameController(
     printNewRound();
 
     return {
+        setPlayerName,
         playRound,
         getActivePlayer,
         endGame,
@@ -175,6 +181,8 @@ function ScreenController() {
     const game = GameController();
     const playerTurnDiv = document.querySelector('.turn');
     const boardDiv = document.querySelector('.board');
+    const startGameBtn = document.getElementById('start-game-btn');
+    const startGameModal = document.getElementById('start-game-modal');
 
     const updateScreen = () => {
         // clear the board
@@ -200,6 +208,7 @@ function ScreenController() {
 
     const bindEvents = () => {
         boardDiv.addEventListener('click', clickHandlerBoard);
+        startGameBtn.addEventListener('click', clickHandlerNewGame);
     }
 
     function clickHandlerBoard(e) {
@@ -208,6 +217,16 @@ function ScreenController() {
         if (!selectedSquare) return;
 
         game.playRound(selectedSquare);
+        updateScreen();
+    }
+
+    function clickHandlerNewGame(e) {
+        e.preventDefault();
+        const playerOneName = document.getElementById('player-1-name');
+        const playerTwoName = document.getElementById('player-2-name');
+
+        game.setPlayerName(playerOneName, playerTwoName);
+        startGameModal.classList.add('hidden');
         updateScreen();
     }
 
