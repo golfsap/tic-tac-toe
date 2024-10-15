@@ -138,10 +138,11 @@ function GameController(
 
         console.log(`Adding ${getActivePlayer().name}'s token into square ${square}`);
 
-        // check for winner
+        // check for winner or 
         if (board.checkWinner()) {
             console.log(`${getActivePlayer().name} has won!`)
             board.printBoard();
+            // endGame();
             return;
         }
 
@@ -149,6 +150,7 @@ function GameController(
         if (board.isTie()) {
             console.log("It's a tie!");
             board.printBoard();
+            // endGame();
             return;
         }
 
@@ -157,11 +159,21 @@ function GameController(
         printNewRound();
     };
 
-    const endGame = () => {
+    const isGameWinner = () => {
         // Modal with winner msg or tie
         // remove buttons on square
-        
-        // restart game?
+        if (board.checkWinner()) {
+            return true;
+        }
+        return false;
+    };
+
+    const isTieGame = () => {
+        if (board.isTie()) return true;
+        return false;
+    }
+
+    const restartGame = () => {
         board.clear();
     }
 
@@ -172,7 +184,9 @@ function GameController(
         setPlayerName,
         playRound,
         getActivePlayer,
-        endGame,
+        isGameWinner,
+        isTieGame,
+        restartGame,
         getBoard: board.getBoard
     };
 }
@@ -183,6 +197,7 @@ function ScreenController() {
     const boardDiv = document.querySelector('.board');
     const startGameBtn = document.getElementById('start-game-btn');
     const startGameModal = document.getElementById('start-game-modal');
+    const modalBackdrop = document.getElementById('modalBackdrop');
 
     const updateScreen = () => {
         // clear the board
@@ -204,6 +219,16 @@ function ScreenController() {
             cellButton.textContent = board[i].getValue();
             boardDiv.appendChild(cellButton);
         }
+
+        // Check for end of game
+        if (game.isGameWinner()) {
+            playerTurnDiv.textContent = `${activePlayer.name} has won!`;
+            endGame();
+        }
+        if (game.isTieGame()) {
+            playerTurnDiv.textContent = "It's a tie!";
+            endGame();
+        }
     };
 
     const bindEvents = () => {
@@ -213,6 +238,7 @@ function ScreenController() {
 
     function clickHandlerBoard(e) {
         const selectedSquare = e.target.dataset.square;
+        const board = game.getBoard();
 
         if (!selectedSquare) return;
 
@@ -225,9 +251,31 @@ function ScreenController() {
         const playerOneName = document.getElementById('player-1-name');
         const playerTwoName = document.getElementById('player-2-name');
 
-        game.setPlayerName(playerOneName, playerTwoName);
+        game.setPlayerName(playerOneName.value, playerTwoName.value);
         startGameModal.classList.add('hidden');
+        modalBackdrop.classList.remove('dim');
         updateScreen();
+    } 
+
+    function clickHandlerRestart(e) {
+        e.preventDefault();
+        startGameModal.classList.remove('hidden');
+        modalBackdrop.classList.add('dim');
+        game.restartGame();
+        updateScreen();
+        bindEvents();
+        // handle multiple restart buttons, option to restart in the middle of game?
+    }
+
+    const endGame = () => {
+        const container = document.querySelector('.container');
+        boardDiv.removeEventListener('click',clickHandlerBoard);
+        
+        const restartBtn = document.createElement('button');
+        restartBtn.textContent = 'Restart Game';
+        container.appendChild(restartBtn);
+
+        restartBtn.addEventListener('click', clickHandlerRestart);
     }
 
     // Initial render

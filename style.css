@@ -50,7 +50,7 @@ h2 {
     border: 1px solid black;
 }
 
-.modalBackdrop {
+.dim {
     position: fixed;
     top: 0;
     left: 0;
