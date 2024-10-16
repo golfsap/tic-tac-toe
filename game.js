@@ -44,9 +44,6 @@ function GameBoard() {
             let b = board[winCondition[1]].getValue();
             let c = board[winCondition[2]].getValue();
 
-            // console.log(a);
-            // console.log(b);
-            // console.log(c);
             if (a === '' || b === '' || c === '') {
                 continue;
             }
@@ -142,7 +139,6 @@ function GameController(
         if (board.checkWinner()) {
             console.log(`${getActivePlayer().name} has won!`)
             board.printBoard();
-            // endGame();
             return;
         }
 
@@ -150,7 +146,6 @@ function GameController(
         if (board.isTie()) {
             console.log("It's a tie!");
             board.printBoard();
-            // endGame();
             return;
         }
 
@@ -160,24 +155,20 @@ function GameController(
     };
 
     const isGameWinner = () => {
-        // Modal with winner msg or tie
-        // remove buttons on square
-        if (board.checkWinner()) {
-            return true;
-        }
+        if (board.checkWinner()) return true;
         return false;
     };
 
     const isTieGame = () => {
         if (board.isTie()) return true;
         return false;
-    }
+    };
 
     const restartGame = () => {
         board.clear();
         // Player one goes first
         activePlayer = players[0];
-    }
+    };
 
     // Initial play game msg
     printNewRound();
@@ -193,7 +184,8 @@ function GameController(
     };
 }
 
-function ScreenController() {
+// Use IIFE
+const display = (function ScreenController() {
     const game = GameController();
     const playerTurnDiv = document.querySelector('.turn');
     const boardDiv = document.querySelector('.board');
@@ -238,7 +230,7 @@ function ScreenController() {
         boardDiv.addEventListener('click', clickHandlerBoard);
         startGameBtn.addEventListener('click', clickHandlerNewGame);
         restartBtn.addEventListener('click', clickHandlerRestart);
-    }
+    };
 
     function clickHandlerBoard(e) {
         const selectedSquare = e.target.dataset.square;
@@ -283,8 +275,7 @@ function ScreenController() {
     // Initial render
     updateScreen();
     bindEvents();
+})();
 
-}
-
-ScreenController();
+// ScreenController();
 // const game = GameController();
