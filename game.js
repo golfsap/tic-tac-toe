@@ -175,6 +175,8 @@ function GameController(
 
     const restartGame = () => {
         board.clear();
+        // Player one goes first
+        activePlayer = players[0];
     }
 
     // Initial play game msg
@@ -196,6 +198,7 @@ function ScreenController() {
     const playerTurnDiv = document.querySelector('.turn');
     const boardDiv = document.querySelector('.board');
     const startGameBtn = document.getElementById('start-game-btn');
+    const restartBtn = document.getElementById('restart-button');
     const startGameModal = document.getElementById('start-game-modal');
     const modalBackdrop = document.getElementById('modalBackdrop');
 
@@ -234,6 +237,7 @@ function ScreenController() {
     const bindEvents = () => {
         boardDiv.addEventListener('click', clickHandlerBoard);
         startGameBtn.addEventListener('click', clickHandlerNewGame);
+        restartBtn.addEventListener('click', clickHandlerRestart);
     }
 
     function clickHandlerBoard(e) {
@@ -248,10 +252,16 @@ function ScreenController() {
 
     function clickHandlerNewGame(e) {
         e.preventDefault();
-        const playerOneName = document.getElementById('player-1-name');
-        const playerTwoName = document.getElementById('player-2-name');
+        let playerOneName = document.getElementById('player-1-name').value;
+        let playerTwoName = document.getElementById('player-2-name').value;
 
-        game.setPlayerName(playerOneName.value, playerTwoName.value);
+        if (playerOneName === '') {
+            playerOneName = 'Player One';
+        }
+        if (playerTwoName === '') {
+            playerTwoName = 'Player Two';
+        }
+        game.setPlayerName(playerOneName, playerTwoName);
         startGameModal.classList.add('hidden');
         modalBackdrop.classList.remove('dim');
         updateScreen();
@@ -264,19 +274,11 @@ function ScreenController() {
         game.restartGame();
         updateScreen();
         bindEvents();
-        // handle multiple restart buttons, option to restart in the middle of game?
     }
 
     const endGame = () => {
-        const container = document.querySelector('.container');
         boardDiv.removeEventListener('click',clickHandlerBoard);
-        
-        const restartBtn = document.createElement('button');
-        restartBtn.textContent = 'Restart Game';
-        container.appendChild(restartBtn);
-
-        restartBtn.addEventListener('click', clickHandlerRestart);
-    }
+    };
 
     // Initial render
     updateScreen();

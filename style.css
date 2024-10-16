@@ -114,6 +114,20 @@ h2 {
     cursor: pointer;
 }
 
+#restart-button {
+    background-color: transparent;
+    color: #bc4749;
+    font-size: 12px;
+    padding: 10px 36px;
+    border: 2px solid #bc4749;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
 .player-name {
     display: flex;
     align-items: center;
