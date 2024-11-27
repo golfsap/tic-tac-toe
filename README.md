@@ -7,6 +7,8 @@ You can enter names for each player or just leave it as is and the names will de
 
 The game can be restarted at any point during the game.
 
+[Live demo](https://golfsap.github.io/tic-tac-toe/)
+
 ## Screenshot
 
 ![screenshot](assets/screenshot.png)
